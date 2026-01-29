@@ -5,6 +5,7 @@ import (
 
 	"github.com/eli-rich/goc4/src/board"
 	"github.com/eli-rich/goc4/src/engine"
+	"github.com/eli-rich/goc4/src/util"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,8 +14,9 @@ type Move struct {
 }
 
 func startGame(c *fiber.Ctx) error {
-	b := board.Board{Bitboards: [2]board.Bitboard{0, 0}, Turn: 1, Hash: 0}
-	b.Move('D')
+	b := &board.Board{}
+	b.Init(1)
+	b.Move(board.Column(util.ConvertCol('D')))
 	return c.JSON(fiber.Map{
 		"move": 'D',
 	})
@@ -25,7 +27,8 @@ func place(c *fiber.Ctx) error {
 	if err := c.BodyParser(move); err != nil {
 		return err
 	}
-	b := board.Board{Bitboards: [2]board.Bitboard{0, 0}, Turn: 1, Hash: 0}
+	b := &board.Board{}
+	b.Init(1)
 	b.Load(move.History)
 	fmt.Println(move.History)
 	thread := make(chan board.Column)
@@ -42,6 +45,6 @@ func place(c *fiber.Ctx) error {
 	})
 }
 
-func callEngine(b board.Board, thread chan board.Column) {
-	thread <- engine.Root(b, float64(5))
+func callEngine(b *board.Board, thread chan board.Column) {
+	thread <- engine.Root(b, float64(8))
 }

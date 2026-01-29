@@ -10,16 +10,17 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "autoprefixer": "^10.4.13",
-    "daisyui": "^2.39.1",
-    "postcss": "^8.4.19",
-    "sass": "^1.56.1",
-    "tailwindcss": "^3.2.4",
-    "typescript": "^4.8.4",
-    "vite": "^3.2.3",
-    "vite-plugin-solid": "^2.4.0"
+    "autoprefixer": "^10.4.23",
+    "daisyui": "^2.52.0",
+    "postcss": "^8.5.6",
+    "sass": "^1.97.3",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^4.9.5",
+    "vite": "^3.2.11",
+    "vite-plugin-solid": "^2.11.10"
   },
   "dependencies": {
-    "solid-js": "^1.6.2"
-  }
+    "solid-js": "^1.9.11"
+  },
+  "packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"
 }
