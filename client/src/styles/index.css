@@ -1,0 +1,82 @@
+@import 'tailwindcss';
+
+/* Dark mode color palette */
+:root {
+  --color-player: #60a5fa; /* Blue-400 */
+  --color-ai: #f472b6; /* Pink-400 */
+  --color-empty: #374151; /* Gray-700 */
+  --color-board: #1f2937; /* Gray-800 */
+}
+
+html {
+  background: #0f172a;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #0f172a 0%, #1e293b 100%);
+  background-size: 100% 110%; /* Extend gradient beyond viewport for Safari */
+  min-height: 115dvh;
+  color: #e2e8f0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+#game-grid {
+  width: min(600px, calc((7 / 6) * ((2 / 3) * 100vh)));
+  height: min(514px, calc((2 / 3) * 100vh));
+  max-width: 90vw;
+}
+
+@media screen and (max-width: 768px) {
+  #game-grid {
+    width: 96vw;
+    height: calc(96vw * 6 / 7);
+    gap: 0.1rem;
+  }
+}
+
+/* Animations */
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes glow-blue {
+  0%,
+  100% {
+    box-shadow: 0 0 5px 2px rgba(96, 165, 250, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px 8px rgba(96, 165, 250, 0.8);
+  }
+}
+
+@keyframes glow-pink {
+  0%,
+  100% {
+    box-shadow: 0 0 5px 2px rgba(244, 114, 182, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px 8px rgba(244, 114, 182, 0.8);
+  }
+}
+
+.glow-blue-pulse {
+  animation: glow-blue 1s ease-in-out 3;
+  box-shadow: 0 0 8px 3px rgba(96, 165, 250, 0.4);
+}
+
+.glow-pink-pulse {
+  animation: glow-pink 1s ease-in-out 3;
+  box-shadow: 0 0 8px 3px rgba(244, 114, 182, 0.4);
+}

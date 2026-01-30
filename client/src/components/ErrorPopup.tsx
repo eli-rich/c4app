@@ -1,28 +1,22 @@
-import { Accessor } from 'solid-js';
-
 interface ErrorProps {
   close: () => void;
 }
 export default function ErrorPopup(props: ErrorProps) {
   return (
-    <>
-      <div class='modal modal-open'>
-        <div class={`modal-box bg-error text-error-content w-3/4 md:w-1/3 lg:w-1/4 p-5`}>
-          <h3 class='font-bold text-2xl'>Illegal Move</h3>
-          <div class='grid grid-rows-1 grid-cols-2 content-center items-center pt-4'>
-            <p class='text-lg'>This column is full.</p>
-            <p class='mb-2 -ml-3 text-4xl'>🚨</p>
-          </div>
-          <div class={`modal-action`}>
-            <button
-              class={`btn btn-error border-2 border-error-content hover:scale-110 text-error-content hover:border-2 hover:border-error-content`}
-              onClick={props.close}
-            >
-              Close
-            </button>
-          </div>
+    <div class='fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
+      <div class='bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl w-full max-w-md p-8 animate-[scale-in_0.2s_ease-out]'>
+        <div class='text-center'>
+          <div class='text-6xl mb-4'>⚠️</div>
+          <h3 class='font-bold text-3xl text-gray-100 mb-2'>Invalid Move</h3>
+          <p class='text-gray-300 text-lg mb-6'>This column is full. Try another one!</p>
+          <button
+            class='bg-red-500 hover:bg-red-600 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 w-full'
+            onClick={props.close}
+          >
+            Got It
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
