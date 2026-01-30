@@ -113,7 +113,7 @@ export default function Game() {
     });
     setIsThinking(false);
     setButtonDisable(false);
-    console.log(pwin, cwin);
+    console.log(`pwin: ${pwin}, cwin: ${cwin}`);
     if (pwin) {
       return youWin();
     }
@@ -124,7 +124,7 @@ export default function Game() {
   }
 
   return (
-    <div class='relative'>
+    <div class='relative' onClick={close}>
       {/* Subtle Thinking Indicator */}
       <div class='flex justify-center mb-4'>
         <Switch>

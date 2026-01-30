@@ -32,11 +32,11 @@ func place(c *fiber.Ctx) error {
 	b.Load(move.History)
 	fmt.Println(move.History)
 	thread := make(chan board.Column)
-	go callEngine(b, thread)
+	go callEngine(b, thread, len(move.History))
 	cmove := <-thread
 	b.Move(cmove)
-	pwin := board.CheckAlign(b.Bitboards[1])
-	cwin := board.CheckAlign(b.Bitboards[0])
+	pwin := board.CheckAlign(b.Bitboards[b.Turn])
+	cwin := board.CheckAlign(b.Bitboards[b.Turn^1])
 	board.Print(b)
 	return c.JSON(fiber.Map{
 		"move": cmove,
@@ -45,6 +45,8 @@ func place(c *fiber.Ctx) error {
 	})
 }
 
-func callEngine(b *board.Board, thread chan board.Column) {
-	thread <- engine.Root(b, float64(8))
+func callEngine(b *board.Board, thread chan board.Column, turnNumber int) {
+	waitTime := min(turnNumber+2, 7)
+	fmt.Printf("WAIT SECONDS: %d\n", waitTime)
+	thread <- engine.Root(b, float64(waitTime))
 }
