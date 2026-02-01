@@ -60,9 +60,9 @@ func main() {
 	markActive()
 
 	go func() {
-		for range time.Tick(1 * time.Second) {
+		for range time.Tick(1 * time.Minute) {
 			last := time.Unix(0, lastMoveTime.Load())
-			if time.Since(last) < 60*time.Second {
+			if time.Since(last) < 60*time.Minute {
 				continue
 			}
 			currentTable := globalTable.Load()
