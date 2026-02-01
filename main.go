@@ -1,13 +1,45 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+
 	"github.com/eli-rich/goc4/src/board"
 	"github.com/eli-rich/goc4/src/book"
+	"github.com/eli-rich/goc4/src/cache"
 	"github.com/gofiber/fiber/v2"
 )
 
 const BOOK_PATH string = "./latest8.c4book"
 const BOOK_MAX_PLY uint8 = 8
+
+var table *cache.Table
+
+func init() {
+	// Cache entry size = 16 bytes
+	// Total memory consumption (excluding proc overhead) = 16 * (1 << POWER)
+
+	tableSizeStr := os.Getenv("GOC4_TABLE_POWER")
+	if tableSizeStr == "" {
+		tableSizeStr = "25" // modest default size
+		log.Print("WARNING: no table size provided\n")
+		log.Print("Falling back to default (1 << 25)\n\n")
+	}
+
+	power, err := strconv.ParseUint(tableSizeStr, 10, 64)
+	if err != nil {
+		log.Printf("WARNING: could not read table size: \"%s\"\n", tableSizeStr)
+		log.Print("Falling back to default (1 << 25)\n")
+		log.Printf("error: %v\n\n", err)
+		power = 25
+	}
+
+	table = cache.NewTable(1 << power)
+	log.Printf("Table created with size: %d\n", (1 << power))
+	log.Printf("Total memory usage: %s\n\n", formatBytes(16*(1<<power)))
+}
 
 func main() {
 	board.GenerateMasks()
@@ -17,4 +49,17 @@ func main() {
 	app.Post("/start", startGame)
 	app.Post("/place", place)
 	app.Listen("0.0.0.0:3000")
+}
+
+func formatBytes(b int64) string {
+	const unit = 1024
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB", float64(b)/float64(div), "KMGTPE"[exp])
 }

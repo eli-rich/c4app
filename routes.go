@@ -5,13 +5,10 @@ import (
 	"math/bits"
 
 	"github.com/eli-rich/goc4/src/board"
-	"github.com/eli-rich/goc4/src/cache"
 	"github.com/eli-rich/goc4/src/engine"
 	"github.com/eli-rich/goc4/src/util"
 	"github.com/gofiber/fiber/v2"
 )
-
-var table = cache.NewTable(1 << 25)
 
 type Move struct {
 	History string `json:"history" xml:"history" form:"history"`
