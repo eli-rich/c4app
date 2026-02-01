@@ -3,8 +3,8 @@ module github.com/eli-rich/c4app
 go 1.25
 
 require (
-	github.com/eli-rich/goc4 v0.0.0-20260129201248-c7e489a1b7cf
-	github.com/gofiber/fiber/v2 v2.52.10
+	github.com/eli-rich/goc4 v0.0.0-20260201075544-f4bb4ebcc239
+	github.com/gofiber/fiber/v2 v2.52.11
 )
 
 require (
