@@ -14,15 +14,6 @@ type Move struct {
 	History string `json:"history" xml:"history" form:"history"`
 }
 
-func startGame(c *fiber.Ctx) error {
-	b := &board.Board{}
-	b.Init(1)
-	b.Move(util.ConvertCol('D'))
-	return c.JSON(fiber.Map{
-		"move": 'D',
-	})
-}
-
 func place(c *fiber.Ctx) error {
 	move := new(Move)
 	if err := c.BodyParser(move); err != nil {
@@ -33,6 +24,16 @@ func place(c *fiber.Ctx) error {
 	b.Load(move.History)
 	fmt.Println(move.History)
 	thread := make(chan uint8)
+
+	markActive()
+	if uint64(len(globalTable.Load().Entries)) < initTableSize {
+		resizeMu.Lock()
+		if uint64(len(globalTable.Load().Entries)) < initTableSize {
+			allocateBigTable()
+		}
+		resizeMu.Unlock()
+	}
+
 	go callEngine(b, thread)
 	cmove := <-thread
 	b.Move(cmove)
@@ -52,7 +53,7 @@ func callEngine(b *board.Board, thread chan uint8) {
 	fmt.Printf("WAIT SECONDS: %d\n", waitTime)
 	nodes := uint64(0)
 	ctx := &engine.SearchContext{
-		Table:      table,
+		Table:      globalTable.Load(),
 		Nodes:      &nodes,
 		TimeLimit:  float64(waitTime),
 		DepthLimit: 0,
@@ -63,7 +64,7 @@ func callEngine(b *board.Board, thread chan uint8) {
 	board.Print(b)
 	fmt.Printf("CPU Move: %c\n", util.ConvertColBack(move))
 	if turnsPlayed <= int(BOOK_MAX_PLY) {
-		fmt.Print("BOOK MOVE\n\n")
+		fmt.Print("POSSIBLE BOOK MOVE\n\n")
 	} else {
 		fmt.Printf("Score: %d\nDepth Reached: %d\n\n", score, depthReached)
 	}

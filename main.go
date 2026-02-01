@@ -4,7 +4,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
+	"runtime/debug"
 	"strconv"
+	"sync"
+	"sync/atomic"
+	"time"
 
 	"github.com/eli-rich/goc4/src/board"
 	"github.com/eli-rich/goc4/src/book"
@@ -15,7 +20,12 @@ import (
 const BOOK_PATH string = "./latest8.c4book"
 const BOOK_MAX_PLY uint8 = 8
 
-var table *cache.Table
+var (
+	globalTable   atomic.Pointer[cache.Table]
+	lastMoveTime  atomic.Int64
+	initTableSize uint64
+	resizeMu      sync.Mutex
+)
 
 func init() {
 	// Cache entry size = 16 bytes
@@ -36,19 +46,50 @@ func init() {
 		power = 25
 	}
 
-	table = cache.NewTable(1 << power)
-	log.Printf("Table created with size: %d\n", (1 << power))
+	initTableSize = (1 << power)
+
+	allocateBigTable()
 	log.Printf("Total memory usage: %s\n\n", formatBytes(16*(1<<power)))
+
 }
 
 func main() {
 	board.GenerateMasks()
 	book.LoadBin(BOOK_PATH, BOOK_MAX_PLY)
+
+	markActive()
+
+	go func() {
+		for range time.Tick(1 * time.Second) {
+			last := time.Unix(0, lastMoveTime.Load())
+			if time.Since(last) < 60*time.Second {
+				continue
+			}
+			currentTable := globalTable.Load()
+			if len(currentTable.Entries) < int(initTableSize) {
+				continue
+			}
+
+			log.Println("Idle for 60m, freeing mem...")
+			globalTable.Store(cache.NewTable(1 << 10))
+			runtime.GC()
+			debug.FreeOSMemory()
+		}
+	}()
+
 	app := fiber.New()
 	app.Static("/", "./client/dist")
-	app.Post("/start", startGame)
 	app.Post("/place", place)
 	app.Listen("0.0.0.0:3000")
+}
+
+func markActive() {
+	lastMoveTime.Store(time.Now().UnixNano())
+}
+
+func allocateBigTable() {
+	globalTable.Store(cache.NewTable(initTableSize))
+	log.Printf("Memory Woke Up: Allocated %s\n", formatBytes(16*int64(initTableSize)))
 }
 
 func formatBytes(b int64) string {

@@ -3,14 +3,14 @@ module github.com/eli-rich/c4app
 go 1.25
 
 require (
-	github.com/eli-rich/goc4 v0.0.0-20260201075544-f4bb4ebcc239
+	github.com/eli-rich/goc4 v0.0.0-20260201201128-11da710c4a1e
 	github.com/gofiber/fiber/v2 v2.52.11
 )
 
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
-	github.com/clipperhouse/uax29/v2 v2.4.0 // indirect
+	github.com/clipperhouse/uax29/v2 v2.5.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.18.3 // indirect
