@@ -49,7 +49,7 @@ func place(c *fiber.Ctx) error {
 func callEngine(b *board.Board, thread chan uint8) {
 	turnsPlayed := bits.OnesCount64(uint64(b.Bitboards[0] | b.Bitboards[1]))
 
-	waitTime := min(turnsPlayed+2, 8)
+	waitTime := min(turnsPlayed+1, 6)
 	fmt.Printf("WAIT SECONDS: %d\n", waitTime)
 	nodes := uint64(0)
 	ctx := &engine.SearchContext{
