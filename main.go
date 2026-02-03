@@ -17,8 +17,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-const BOOK_PATH string = "./latest8.c4book"
-const BOOK_MAX_PLY uint8 = 8
+const BOOK_PATH string = "./latest9.c4book"
+const BOOK_MAX_PLY uint8 = 9
 
 var (
 	globalTable   atomic.Pointer[cache.Table]
